@@ -1,0 +1,107 @@
+[
+    {
+        "function_name": "calculate_monte_carlo_pi",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "        # Check if point is inside the unit circle using a more efficient method\n        distance = x**2 + y**2\n        if distance <= 1:",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 6,
+                "code": "        distance = (x-0)**2 + (y-0)**2",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def calculate_monte_carlo_pi(num_samples: int) -> float:\n    # Initialize sum of points inside the unit circle\n    points_inside_circle = 0\n    \n    # Generate random points and check if they fall inside the unit circle\n    for _ in range(num_samples):\n        x, y = random.random(), random.random()\n        distance = x**2 + y**2\n        if distance <= 1:\n            points_inside_circle += 1\n    \n    # Calculate pi using the Monte Carlo method\n    pi_estimate = 4 * points_inside_circle / num_samples\n    return pi_estimate",
+        "code_review_suggestion": "SUMMARY: The code change replaced the calculation of distance from a point to the origin with a more simplified version, removing the subtraction of the origin's coordinates.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The change simplifies the code without affecting its functionality, as the origin's coordinates are (0,0) and subtracting them does not change the result."
+    },
+    {
+        "function_name": "merge_duplicate_records",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 6,
+                "code": "        if not isinstance(record[\"values\"], list):\n            record[\"values\"] = [record[\"values\"]]",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 4,
+                "end_line": 4,
+                "code": "        result[record[\"id\"]][\"values\"].append(record[\"values\"])",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def merge_duplicate_records(records):\n    result = {}\n    for record in records:\n        if record[\"id\"] in result:\n            result[record[\"id\"]][\"values\"].extend(record[\"values\"]) \n        else:\n            result[record[\"id\"]] = {\"id\": record[\"id\"], \"values\": record[\"values\"]}\n    return list(result.values())",
+        "code_review_suggestion": "SUMMARY: The code change modifies the handling of record values to ensure they are lists and merges duplicate records by extending the list of values instead of appending.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The changes improve the code's ability to handle different data types and merge records correctly."
+    },
+    {
+        "function_name": "get_last_week_dates",
+        "added_code": [
+            {
+                "start_line": 4,
+                "end_line": 4,
+                "code": "last_week_dates = [date for date in dates if date >= last_week]",
+                "line_count": 1
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 4,
+                "end_line": 6,
+                "code": "last_week_dates = []\nfor date in dates:\n  if date >= last_week:\n    last_week_dates.append(date)",
+                "line_count": 4
+            }
+        ],
+        "full_function_code": "def get_last_week_dates():\n  today = datetime.date.today()\n  last_week = today - datetime.timedelta(weeks=1)\n  dates = [today - datetime.timedelta(days=i) for i in range(7)]\n  last_week_dates = [date for date in dates if date >= last_week]\n  return last_week_dates",
+        "code_review_suggestion": "SUMMARY: The code was refactored to replace a for loop with a list comprehension to generate the last week's dates.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The change improves code readability and conciseness without introducing any bugs."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 7,
+                "end_line": 9,
+                "code": "        elif response.status_code == 404:\\n            return {\"error\": \"Not Found\"}\\n        else:\\n            return {\"error\": \"Unexpected status code: \" + str(response.status_code)}",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 7,
+                "code": "        return {\"error\": \"Unexpected status code: \" + str(response.status_code)}",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def handle_network_request(url, params, headers):\\n    try:\\n        import requests\\n        response = requests.get(url, params=params, headers=headers)\\n        if response.status_code == 200:\\n            return response.json()\\n        elif response.status_code == 404:\\n            return {\"error\": \"Not Found\"}\\n        else:\\n            return {\"error\": \"Unexpected status code: \" + str(response.status_code)}\\n    except requests.exceptionsProxyError as e:\\n        return {\"error\": \"Proxy error: \" + str(e)}\\n    except requests.exceptionsRequestException as e:\\n        return {\"error\": \"Request error: \" + str(e)}",
+        "code_review_suggestion": "SUMMARY: The code change adds a specific error handling for 404 status codes and removes the generic error handling that was previously returning all non-200 status codes as \"Unexpected status code\".\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding more specific error handling for other common status codes, such as 500 for internal server errors.\n\nDECISION: Yes - The change improves error handling by providing a more specific error message for 404 status codes."
+    },
+    {
+        "function_name": "validate_and_parse_user_input",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "        cached_results = {}\n        if key in cached_results:",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 7,
+                "code": "        parsed_data[key] = validate_input(input_data[key])\n        # no caching",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def validate_and_parse_user_input(input_data):\n    cached_results = {}\n    if isinstance(input_data, dict):\n        keys = [key for key in input_data.keys() if key.startswith('user_')]\n        parsed_data = {}\n        for key in keys:\n            if key in cached_results:\n                parsed_data[key] = cached_results[key]\n            else:\n                parsed_data[key] = validate_input(input_data[key])\n                cached_results[key] = parsed_data[key]\n        return parsed_data\n    else:\n        return None\n",
+        "code_review_suggestion": "SUMMARY: The code change introduces caching to store the results of validated user input to avoid repeated validation.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The caching mechanism improves performance by avoiding redundant validation operations."
+    }
+]
