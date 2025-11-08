@@ -90,12 +90,12 @@ class CodeReviewPromptGenerator:
         # Build the prompt with very clear instructions
         changes_section = ""
         if added_blocks:
-            changes_section += f"### ADDED:\n{chr(10).join(added_blocks)}\n"
+            changes_section += f"ADDED:\n{chr(10).join(added_blocks)}\n"
         if deleted_blocks:
             if has_deletions and not has_additions:
-                changes_section += f"### REMOVED (these lines were deleted from the function above):\n{chr(10).join(deleted_blocks)}\n"
+                changes_section += f"REMOVED (these lines were deleted from the function above):\n{chr(10).join(deleted_blocks)}\n"
             else:
-                changes_section += f"### REMOVED:\n{chr(10).join(deleted_blocks)}\n"
+                changes_section += f"REMOVED:\n{chr(10).join(deleted_blocks)}\n"
 
         if not changes_section:
             changes_section = "No code changes detected.\n"
@@ -105,15 +105,21 @@ class CodeReviewPromptGenerator:
         if has_deletions and not has_additions:
             instruction_context = " The function shown above is the current state after the removal."
 
-        prompt = f"""### Instruction:
-You are a code reviewer. Analyze this Python code change and respond EXACTLY in the format below.{instruction_context}
+        prompt = f"""You are a code reviewer. Analyze this Python code change and respond EXACTLY in the format below.{instruction_context}
 
 {context_section}{changes_section}
-### Response:
+
+You MUST respond in this EXACT format (copy the headers exactly):
+
 SUMMARY: [One sentence describing what changed]
+
 ISSUES: [List specific bugs/problems, or write "None found"]
+
 IMPROVEMENTS: [Suggest specific improvements, or write "None needed"]
-DECISION: [Yes/No] - [One sentence reason]"""
+
+DECISION: [Yes/No] - [One sentence reason]
+
+Do not add extra text or explanations outside this format."""
 
         return prompt.strip()
 
