@@ -1,0 +1,632 @@
+[
+    {
+        "function_name": "validate_and_parse_user_input",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "    # Validate input length\n    if len(input_string) < 5:\n        raise ValueError(\"Input string must be at least 5 characters long\")",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 0,
+                "end_line": 0,
+                "code": "",
+                "line_count": 0
+            }
+        ],
+        "full_function_code": "def validate_and_parse_user_input(input_string):\n    if input_string is None:\n        raise ValueError(\"Input string cannot be None\")\n    if not isinstance(input_string, str):\n        raise TypeError(\"Input must be a string\")\n    # Validate input length\n    if len(input_string) < 5:\n        raise ValueError(\"Input string must be at least 5 characters long\")\n    try:\n        # Attempt to parse the input string\n        parsed_input = int(input_string)\n        return parsed_input\n    except ValueError:\n        raise ValueError(\"Input string must contain only numeric characters\")",
+        "code_review_suggestion": "SUMMARY: A validation check for input length was added to the `validate_and_parse_user_input` function.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding a maximum length validation to prevent extremely long inputs, and provide a more specific error message when the input is not numeric.\n\nDECISION: Yes - The added validation improves the function's robustness by ensuring the input meets a minimum length requirement."
+    },
+    {
+        "function_name": "calculate_eigenvalues",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "logging.basicConfig(level=logging.INFO)\nstart_time = time.time()\nlogging.info(\"Eigenvalues calculated in %f seconds\" % (time.time() - start_time))",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 6,
+                "code": "# print(\"Eigenvalues calculated\")",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def calculate_eigenvalues(matrix):\n    import logging\n    import time\n    logging.basicConfig(level=logging.INFO)\n    start_time = time.time()\n    # Check if the input matrix is a square matrix\n    if matrix.shape[0] != matrix.shape[1]:\n        raise ValueError(\"Input matrix must be a square matrix\")\n    # Calculate eigenvalues using the numpy library\n    import numpy as np\n    eigenvalues = np.linalg.eigvals(matrix)\n    logging.info(\"Eigenvalues calculated in %f seconds\" % (time.time() - start_time))\n    return eigenvalues",
+        "code_review_suggestion": "SUMMARY: The code change added logging functionality to track the execution time of the eigenvalue calculation and removed a print statement.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider moving the import statements to the top of the file and configuring logging only once, as repeated configuration can lead to unexpected behavior.\n\nDECISION: Yes - The added logging functionality provides useful information about the execution time, making the code more informative and debuggable."
+    },
+    {
+        "function_name": "handle_api_response",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "if api_data['id'] in cache:\n        return cache[api_data['id']]",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 3,
+                "end_line": 3,
+                "code": "processed_data = process_api_data(api_data)",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def handle_api_response(api_data, cache):\n    # Check if data is already cached\n    if api_data['id'] in cache:\n        return cache[api_data['id']]\n    # If not, process the data and cache the result\n    processed_data = process_api_data(api_data)\n    cache[api_data['id']] = processed_data\n    return processed_data\n\ndef process_api_data(api_data):\n    # Simulating some expensive computation\n    result = api_data['value'] * 2\n    return result",
+        "code_review_suggestion": "SUMMARY: The code change removed the processing of API data and instead only checks and returns the cached data if available, without updating the cache with new data.\n\nISSUES: \n* The cache is not updated with new data when the 'id' is not found in the cache.\n* The function may return inconsistent results if the cache is not properly updated.\n* The function does not handle the case where the 'id' is not in the cache and the API data is not processed.\n\nIMPROVEMENTS: \n* Add error handling to check if 'id' and 'value' exist in api_data before processing.\n* Update the cache with the processed data when the 'id' is not found in the cache.\n\nDECISION: No - The code change introduces a bug by not processing and caching new data."
+    },
+    {
+        "function_name": "aggregate_customer_data",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "            if customer_data:\\n                cached_results[customer_id] = customer_data\\n                aggregated_data[customer_id] = customer_data['total_spent']",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 5,
+                "end_line": 5,
+                "code": "            aggregated_data[customer_id] = data_source.get_customer_data(customer_id)['total_spent']",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def aggregate_customer_data(customer_ids, data_source):\n    cached_results = {}\n    aggregated_data = {}\n    for customer_id in customer_ids:\n        if customer_id not in cached_results:\n            customer_data = data_source.get_customer_data(customer_id)\n            if customer_data:\n                cached_results[customer_id] = customer_data\n                aggregated_data[customer_id] = customer_data['total_spent']\n            else:\n                print(\"Warning: No data found for customer \" + str(customer_id))\n        else:\n            aggregated_data[customer_id] = cached_results[customer_id]['total_spent']\n    return aggregated_data",
+        "code_review_suggestion": "SUMMARY: The code change introduces caching to avoid repeated data retrieval for the same customer ID, improving performance by reducing the number of calls to the data source.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding error handling for cases where 'total_spent' is not present in the customer data, and potentially logging warnings instead of printing them for better manageability.\n\nDECISION: Yes - The change improves performance and reduces redundant data retrieval, making it a beneficial modification."
+    },
+    {
+        "function_name": "handle_network_errors",
+        "added_code": [
+            {
+                "start_line": 11,
+                "end_line": 14,
+                "code": "            if response.status_code == 401:\n                logging.error(\"Unauthorized access\")\n                return {\"error\": \"Unauthorized access\"}\n            elif response.status_code == 500:",
+                "line_count": 4
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 10,
+                "code": "            return {\"error\": \"Request failed\"}",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def handle_network_errors(request):\n    import logging\n    import time\n    logging.basicConfig(level=logging.INFO)\n    start_time = time.time()\n    try:\n        # Simulate a network request\n        response = request\n        if response.status_code == 200:\n            logging.info(\"Request successful\")\n            return response.json()\n        else:\n            logging.warning(\"Request failed with status code \" + str(response.status_code))\n            # New error handling logic\n            if response.status_code == 401:\n                logging.error(\"Unauthorized access\")\n                return {\"error\": \"Unauthorized access\"}\n            elif response.status_code == 500:\n                logging.error(\"Internal server error\")\n                return {\"error\": \"Internal server error\"}\n    except Exception as e:\n        logging.error(\"An error occurred: \" + str(e))\n        return {\"error\": str(e)}\n    finally:\n        end_time = time.time()\n        logging.info(\"Request processing time: \" + str(end_time - start_time) + \" seconds\")",
+        "code_review_suggestion": "SUMMARY: The code change added specific error handling for status codes 401 and 500, and removed a generic error message for failed requests.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding more specific error handling for other common status codes, such as 404 or 403, and logging the full response content for debugging purposes.\n\nDECISION: Yes - The change improves error handling and provides more informative error messages."
+    },
+    {
+        "function_name": "optimize_data_retrieval",
+        "added_code": [
+            {
+                "start_line": 6,
+                "end_line": 8,
+                "code": "except Exception as e:\\n        # Log the exception and re-raise it\\n        self.logger.error(\"Error retrieving data: \" + str(e))",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 6,
+                "code": "except:\n        # Generic exception handling",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def optimize_data_retrieval(self, query):\n    try:\n        # Check if the query is cached\n        if query in self.cache:\n            return self.cache[query]\n        # If not, retrieve the data and cache it\n        data = self.retrieve_data_from_database(query)\n        self.cache[query] = data\n        return data\n    except Exception as e:\n        # Log the exception and re-raise it\n        self.logger.error(\"Error retrieving data: \" + str(e))\n        raise\n    finally:\n        # Clean up resources\n        self.close_database_connection()",
+        "code_review_suggestion": "SUMMARY: The code change replaces a generic exception handling block with a more specific exception handling block that logs the error and re-raises the exception.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding more specific exception types instead of catching the general Exception class to handle different types of exceptions differently.\n\nDECISION: Yes - The change improves the code by providing more informative error logging and allowing the exception to propagate up the call stack."
+    },
+    {
+        "function_name": "handle_api_response",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 3,
+                "code": "validated_data = [item for item in data if 'id' in item and 'name' in item]",
+                "line_count": 1
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "validated_data = []\n        for item in data:\n            if 'id' in item and 'name' in item:\n                validated_data.append(item)",
+                "line_count": 4
+            }
+        ],
+        "full_function_code": "def handle_api_response(response):\n    if response.status_code == 200:\n        data = response.json()\n        validated_data = [item for item in data if 'id' in item and 'name' in item]\n        return validated_data\n    else:\n        return []",
+        "code_review_suggestion": "SUMMARY: The code was refactored to use a list comprehension for data validation, replacing the original loop-based implementation.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The change improves code readability and conciseness without introducing any bugs."
+    },
+    {
+        "function_name": "parse_text_into_sentences",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "sentences = [\" \".join([word for word in words if word.startswith(\"[\")])]\nif words:\n    sentences.extend([\" \".join([word for word in words if not word.startswith(\"[\")])])",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 5,
+                "end_line": 10,
+                "code": "for word in words:\n        if word.endswith(\".\") or word.endswith(\"!\") or word.endswith(\"?\"):\n            sentence.append(word)\n            sentences.append(\" \".join(sentence))\n            sentence = []\n        else:\n            sentence.append(word)",
+                "line_count": 6
+            }
+        ],
+        "full_function_code": "def parse_text_into_sentences(text):\n    sentences = []\n    words = text.split()\n    sentence = []\n    for word in words:\n        if word.endswith(\".\") or word.endswith(\"!\") or word.endswith(\"?\"):\n            sentence.append(word)\n            sentences.append(\" \".join(sentence))\n            sentence = []\n        else:\n            sentence.append(word)\n    return sentences",
+        "code_review_suggestion": "SUMMARY: The code change replaced the original sentence parsing logic with a new approach that splits sentences based on the presence of words starting with a square bracket.\n\nISSUES: The new code does not correctly handle punctuation marks to split sentences, and it may not work correctly for texts with multiple sentences or no square brackets.\n\nIMPROVEMENTS: The code should be improved to correctly handle punctuation marks and sentence boundaries, and it should also handle edge cases such as empty input or input with no square brackets.\n\nDECISION: No - The new code does not correctly implement the original function's purpose of parsing text into sentences based on punctuation marks."
+    },
+    {
+        "function_name": "compute_euclidean_norm",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 6,
+                "code": "except Exception as e:\n    print(\"Error computing norm: \" + str(e))",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 5,
+                "end_line": 5,
+                "code": "return None",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def compute_euclidean_norm(vector):\n  try:\n    squared_magnitudes = [x**2 for x in vector]\n    sum_of_squares = sum(squared_magnitudes)\n    norm = sum_of_squares**0.5\n    return norm\n  except Exception as e:\n    print(\"Error computing norm: \" + str(e))\n    return None",
+        "code_review_suggestion": "SUMMARY: The code change added error handling to the function and removed the return of None in case of an exception, but the removal of return None was already present in the original function and the added except block was also present, however the original function had a return None after the except block which is now removed.\n\nISSUES: \n* The function does not handle the case when the input vector is not iterable or contains non-numeric values.\n* The function does not handle the case when the input vector is empty.\n\nIMPROVEMENTS: \n* Add input validation to check if the input vector is iterable and contains only numeric values.\n* Consider logging the error instead of printing it.\n* Consider re-raising the exception instead of returning None.\n\nDECISION: No - The change removes the return None statement but does not improve the function's error handling or input validation."
+    },
+    {
+        "function_name": "read_and_parse_file",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 11,
+                "code": "            if len(parsed_lines) == 0:\\n                return []",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 10,
+                "code": "            if not parsed_lines:",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def read_and_parse_file(file_path, encoding=\"utf-8\"):\n    try:\n        with open(file_path, \"r\", encoding=encoding) as file:\n            content = file.read()\n            if content.strip() == \"\":\n                return None\n            lines = content.split(\"\\n\")\n            parsed_lines = []\n            for line in lines:\n                if line.startswith(\"#\"):\n                    continue\n                parsed_lines.append(line.strip())\n            return parsed_lines\n    except FileNotFoundError:\n        print(\"File not found: \" + file_path)\n        return None\n    except Exception as e:\n        print(\"Error reading file: \" + str(e))\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change replaces the condition `if not parsed_lines` with `if len(parsed_lines) == 0` to check for empty lists, and adds a return statement to return an empty list in this case.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: No - The new condition is less Pythonic and less efficient than the original condition."
+    },
+    {
+        "function_name": "compute_statistical_moments",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 3,
+                "code": "std_dev = variance ** 0.5",
+                "line_count": 1
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 2,
+                "end_line": 2,
+                "code": "variance = sum([((x - mean) ** 2) for x in data]) / len(data)",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def compute_statistical_moments(data):\n    mean = sum(data) / len(data)\n    variance = sum((x - mean) ** 2 for x in data) / len(data)\n    std_dev = variance ** 0.5\n    return mean, variance, std_dev",
+        "code_review_suggestion": "SUMMARY: The code change replaced a list comprehension with a generator expression in the calculation of variance and added a line to calculate the standard deviation.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The changes improve the code's efficiency and add a useful calculation for standard deviation."
+    },
+    {
+        "function_name": "read_and_parse_config",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 9,
+                "code": "            # Parse the configuration lines\n            config_dict = {}\n            for line in config_lines:\n                if line.startswith('#'):\n                    continue",
+                "line_count": 5
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 7,
+                "code": "            config = {}\n            config = {line.split('=')[0].strip(): line.split('=')[1].strip() for line in config_lines if '=' in line}",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def read_and_parse_config(file_path: str) -> dict:\n    # Read the configuration file\n    try:\n        with open(file_path, 'r') as file:\n            config_lines = [line.strip() for line in file.readlines()]\n            # Parse the configuration lines\n            config_dict = {}\n            for line in config_lines:\n                if line.startswith('#'):\n                    continue\n                key_value = line.split('=')\n                if len(key_value) == 2:\n                    config_dict[key_value[0].strip()] = key_value[1].strip()\n            return config_dict\n    except FileNotFoundError:\n        print(\"The configuration file does not exist.\")\n        return {}\n    except Exception as e:\n        print(f\"An error occurred: {e}\")\n        return {}",
+        "code_review_suggestion": "SUMMARY: The code change replaced a dictionary comprehension with a for loop to parse configuration lines from a file.\n\nISSUES: None found\n\nIMPROVEMENTS: The code could be improved by adding error handling for the case when a line does not contain an '=' character, and also for duplicate keys.\n\nDECISION: Yes - The change is acceptable as it provides similar functionality to the original code, but could be further improved for better error handling and robustness."
+    },
+    {
+        "function_name": "read_config_file",
+        "added_code": [
+            {
+                "start_line": 13,
+                "end_line": 16,
+                "code": "            # Check if the line is in the correct format\n            if len(key_value) == 2:\n                # Extract the key and value\n                key = key_value[0].strip()\n                value = key_value[1].strip()",
+                "line_count": 4
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 13,
+                "end_line": 13,
+                "code": "            key, value = line.split('=')",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def read_config_file(file_path):\n    # Check if the file exists\n    if not os.path.exists(file_path):\n        raise FileNotFoundError(\"The file does not exist: \" + file_path)\n    try:\n        # Open the file in read mode\n        with open(file_path, 'r') as file:\n            # Read the content\n            content = file.read()\n            # Remove leading and trailing whitespaces\n            content = content.strip()\n            # Split the content into lines\n            lines = content.split('\\n')\n            # Initialize an empty dictionary to store the config\n            config = {}\n            # Iterate over each line\n            for line in lines:\n                # Check if the line is not empty\n                if line:\n                    # Split the line into key and value\n                    key_value = line.split('=')\n                    # Check if the line is in the correct format\n                    if len(key_value) == 2:\n                        # Extract the key and value\n                        key = key_value[0].strip()\n                        value = key_value[1].strip()\n                        # Add the key-value pair to the config dictionary\n                        config[key] = value\n            # Return the config dictionary\n            return config\n    except Exception as e:\n        # Log the error and raise it\n        logging.error(\"An error occurred while reading the config file: \" + str(e))\n        raise",
+        "code_review_suggestion": "SUMMARY: The code change replaces the direct assignment of key and value from the line split with a conditional check to ensure the line is in the correct format before extracting the key and value.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding a message to indicate when a line in the config file is skipped due to incorrect format for better debugging.\n\nDECISION: Yes - The change improves the robustness of the function by handling potential formatting errors in the config file."
+    },
+    {
+        "function_name": "aggregate_customer_data",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "if not data_source:\\n            raise ValueError(\"Data source cannot be empty\")\\n        ",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 10,
+                "code": "# customer_data = database.load_customer_data(customer_id, data_source)",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def aggregate_customer_data(customer_id, data_source):\n    try:\n        if not isinstance(customer_id, int) or not isinstance(data_source, str):\n            raise ValueError(\"Invalid input type\")\n        if customer_id <= 0:\n            raise ValueError(\"Customer ID must be a positive integer\")\n        if not data_source:\n            raise ValueError(\"Data source cannot be empty\")\n        # Load data from database\n        database = Database()\n        customer_data = database.load_customer_data(customer_id)\n        if not customer_data:\n            raise ValueError(\"Customer data not found\")\n        # Aggregate data\n        aggregated_data = {}\n        for key, value in customer_data.items():\n            if key not in aggregated_data:\n                aggregated_data[key] = []\n            aggregated_data[key].append(value)\n        # Save aggregated data to file\n        file_handler = FileHandler()\n        file_handler.save_aggregated_data(aggregated_data, data_source)\n        return aggregated_data\n    except ValueError as ve:\n        print(\"Error: \" + str(ve))\n        return None\n    except Exception as e:\n        print(\"An error occurred: \" + str(e))\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change added a check to ensure the data source is not empty and removed the data source parameter from the database load function.\n\nISSUES: \n1. The removed line was likely necessary for loading customer data specific to the given data source, its removal may cause incorrect data to be loaded.\n2. The added check for empty data source does not handle the case where data source is not a string, it could be a whitespace string or other types of empty values.\n\nIMPROVEMENTS: \n1. Consider adding input validation for the data source to check for whitespace strings or other types of empty values.\n2. Consider reinstating the removed line or finding an alternative way to load customer data specific to the given data source.\n\nDECISION: No - The changes introduced may cause incorrect data loading and do not fully handle invalid input cases."
+    },
+    {
+        "function_name": "validate_user_input",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 9,
+                "code": "    # Log validation result\\n    print(\"Validation successful: input data is valid\")",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 7,
+                "code": "    # TODO: add logging for validation result",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def validate_user_input(data):\n    # Check if input data is valid\n    if not isinstance(data, dict):\n        print(\"Invalid input: expected a dictionary\")\n        return False\n    \n    # Check if required fields are present\n    required_fields = [\"name\", \"email\", \"phone\"]\n    for field in required_fields:\n        if field not in data:\n            print(\"Invalid input: missing required field '\\\" + field + \"'\")\n            return False\n    \n    # Log validation result\n    print(\"Validation successful: input data is valid\")\n    return True",
+        "code_review_suggestion": "SUMMARY: The code change added a print statement to log the validation result when the input data is valid, replacing a TODO comment.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider using a logging library instead of print statements for logging validation results, and provide a more informative error message for the missing required field.\n\nDECISION: Yes - The change is an improvement as it provides feedback to the user when the validation is successful."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 5,
+                "code": "    # Cache the result for future use\n",
+                "line_count": 1
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 9,
+                "code": "    # Unused code, remove to improve performance\n    # unused_variable = \"some_value\"\n    # print(unused_variable)\n",
+                "line_count": 3
+            }
+        ],
+        "full_function_code": "def handle_network_request(request_data, cache):\n    # Check if request is cached\n    if request_data in cache:\n        return cache[request_data]\n    # If not, process the request\n    result = process_request(request_data)\n    # Cache the result for future use\n    cache[request_data] = result\n    return result\n",
+        "code_review_suggestion": "SUMMARY: The code change removes unused variables and prints, and adds a comment to explain caching, but the added comment was already present in the original function.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The change improves code readability by removing unused code."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "# Add validation for URL\nif not isinstance(url, str) or not url.startswith(\"http\"):\n    raise ValueError(\"Invalid URL\")",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 11,
+                "end_line": 12,
+                "code": "# Check if request was successful\nif response.status_code != 200:",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def handle_network_request(self, url, params, headers):\n    # Set default headers if not provided\n    if headers is None:\n        headers = {}\n    # Set default user agent\n    if \"User-Agent\" not in headers:\n        headers[\"User-Agent\"] = \"Mozilla/5.0\"\n    # Add validation for URL\n    if not isinstance(url, str) or not url.startswith(\"http\"):\n        raise ValueError(\"Invalid URL\")\n    try:\n        # Send GET request\n        response = self.session.get(url, params=params, headers=headers)\n        # Check if request was successful\n        if response.status_code == 200:\n            return response.json()\n        else:\n            # Log error and re-raise exception\n            self.logger.error(\"Request failed with status code {}\".format(response.status_code))\n            response.raise_for_status()\n    except requests.RequestException as e:\n        # Log error and re-raise exception\n        self.logger.error(\"Request failed with error {}\".format(e))\n        raise",
+        "code_review_suggestion": "SUMMARY: The code change added URL validation and modified the request success check, replacing a specific status code check with a raise for any non-200 status code.\n\nISSUES: The added validation does not account for \"https\" URLs, and the removed check for non-200 status codes may lead to less informative error messages.\n\nIMPROVEMENTS: Consider using a more comprehensive URL validation method, such as using the `urllib.parse` module, and add more informative error messages for non-200 status codes.\n\nDECISION: No - The changes introduced potential issues with URL validation and error handling."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 11,
+                "code": "            # Added logging for authentication errors\n            logging.error(\"Authentication error: \" + str(response.status_code))",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 10,
+                "code": "            return None",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def handle_network_request(url, params, headers):\n    if url is None or params is None or headers is None:\n        raise ValueError(\"Invalid input parameters\")\n    try:\n        response = requests.get(url, params=params, headers=headers)\n        if response.status_code == 200:\n            return response.json()\n        elif response.status_code == 401:\n            # Added logging for authentication errors\n            logging.error(\"Authentication error: \" + str(response.status_code))\n            return None\n        else:\n            # Improved error handling with more informative messages\n            error_message = \"Request failed with status code \" + str(response.status_code)\n            logging.error(error_message)\n            return None\n    except requests.exceptions.RequestException as e:\n        # Added logging for request exceptions\n        logging.error(\"Request exception: \" + str(e))\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change adds logging for authentication errors and improves error handling with more informative messages, while removing a redundant return statement.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The changes improve error handling and logging without introducing any bugs."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "            logging.info(\"Request successful: \" + url)\n            # Added logging for successful requests\n",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 9,
+                "end_line": 11,
+                "code": "            logging.warning(\"Request failed: \" + url)\n            # Removed unnecessary logging for failed requests",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def handle_network_request(url, params, timeout=10):\n    import logging\n    logging.basicConfig(level=logging.INFO)\n    try:\n        import requests\n        response = requests.get(url, params=params, timeout=timeout)\n        if response.status_code == 200:\n            logging.info(\"Request successful: \" + url)\n            return response.json()\n        else:\n            logging.warning(\"Request failed: \" + url + \" - Status code: \" + str(response.status_code))\n            return None\n    except requests.exceptions.Timeout:\n        logging.error(\"Request timed out: \" + url)\n        return None\n    except requests.exceptions.RequestException as e:\n        logging.error(\"Request exception: \" + str(e))\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change added logging for successful requests and removed logging for failed requests, but the removed section was actually logging a warning for failed requests with a status code, not just any failed request.\n\nISSUES: The removed logging for failed requests actually provided useful information about the status code of the failed request, which is now lost.\n\nIMPROVEMENTS: The added logging for successful requests could be improved by including more information, such as the response status code or the time taken for the request, and the removed logging for failed requests should be reinstated with its original functionality.\n\nDECISION: No - The change removes useful logging information about failed requests."
+    },
+    {
+        "function_name": "read_and_process_file",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "logging.basicConfig(level=logging.INFO)\nstart_time = time.time()",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 6,
+                "code": "# Start timer",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def read_and_process_file(file_path):\n    import logging\n    import time\n    logging.basicConfig(level=logging.INFO)\n    start_time = time.time()\n    try:\n        with open(file_path, 'r') as file:\n            content = file.read()\n            logging.info(\"File read successfully\")\n        # Process the content\n        processed_content = content.upper()\n        logging.info(\"Content processed in %.2f seconds\" % (time.time() - start_time))\n        return processed_content\n    except FileNotFoundError:\n        logging.error(\"File not found\")\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change added logging configuration and a start timer, and removed a comment about starting a timer.\n\nISSUES: None found\n\nIMPROVEMENTS: The logging configuration and timer initialization should be placed outside the function to avoid repeated initialization on multiple function calls.\n\nDECISION: No - The code change is incomplete as it does not handle the case where the file is found but cannot be read or processed, and the logging configuration should be set up only once."
+    },
+    {
+        "function_name": "read_and_process_file",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 6,
+                "code": "            if not all(line.startswith(\"#\") or line.startswith(\";\") for line in lines):\n                raise ValueError(\"Invalid file format\")",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 11,
+                "code": "            valid_lines = []\n            for line in lines:\n                if line.startswith(\"#\") or line.startswith(\";\"):\n                    continue\n                valid_lines.append(line)\n            return valid_lines",
+                "line_count": 5
+            }
+        ],
+        "full_function_code": "def read_and_process_file(file_path):\n    try:\n        with open(file_path, \"r\") as file:\n            lines = [line.strip() for line in file]\n            if not all(line.startswith(\"#\") or line.startswith(\";\") for line in lines):\n                raise ValueError(\"Invalid file format\")\n            # Remove comments and empty lines\n            cleaned_lines = [line for line in lines if line and not line.startswith(\"#\") and not line.startswith(\";\")]\n            return cleaned_lines\n    except FileNotFoundError:\n        print(\"File not found\")\n        return []\n    except Exception as e:\n        print(\"An error occurred: \" + str(e))\n        return []",
+        "code_review_suggestion": "SUMMARY: The code change added a validation check to ensure all lines in the file start with \"#\" or \";\" and removed the original line processing logic, replacing it with a list comprehension.\n\nISSUES: The new validation check will incorrectly raise an error if the file contains any lines that do not start with \"#\" or \";\", which is the opposite of the intended behavior of removing comments and empty lines.\n\nIMPROVEMENTS: The validation check should be modified to only raise an error if no lines in the file start with \"#\" or \";\" and are not empty, and the error message should be more informative.\n\nDECISION: No - The change introduces a bug that will cause the function to incorrectly reject valid files."
+    },
+    {
+        "function_name": "optimize_database_query",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "if not query_params:\\n        raise ValueError(\"Input dictionary cannot be empty\")",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 0,
+                "end_line": 0,
+                "code": "",
+                "line_count": 0
+            }
+        ],
+        "full_function_code": "def optimize_database_query(query_params: dict) -> str:\n    if not isinstance(query_params, dict):\n        raise ValueError(\"Input must be a dictionary\")\n    if not query_params:\n        raise ValueError(\"Input dictionary cannot be empty\")\n    table_name = query_params.get(\"table_name\")\n    if not table_name:\n        raise ValueError(\"Table name is required\")\n    columns = query_params.get(\"columns\")\n    if not columns:\n        columns = \"*\"\n    where_clause = query_params.get(\"where_clause\")\n    if where_clause:\n        where_clause = f\"WHERE {where_clause}\"\n    else:\n        where_clause = \"\"\n    query = f\"SELECT {columns} FROM {table_name} {where_clause};\"\n    return query",
+        "code_review_suggestion": "SUMMARY: A check was added to raise an error when the input dictionary is empty.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The added check improves the function's robustness by handling empty input dictionaries."
+    },
+    {
+        "function_name": "format_string_cache",
+        "added_code": [
+            {
+                "start_line": 7,
+                "end_line": 9,
+                "code": "except Exception as e:\\n        print(\"Error occurred: \" + str(e))",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 7,
+                "code": "return result",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def format_string_cache(input_list, cache_size=100):\n    try:\n        cache = {}\n        result = []\n        for input_str in input_list:\n            if input_str in cache:\n                result.append(cache[input_str])\n            else:\n                formatted_str = input_str.title()\n                cache[input_str] = formatted_str\n                result.append(formatted_str)\n        return result\n    except Exception as e:\n        print(\"Error occurred: \" + str(e))\n        return []",
+        "code_review_suggestion": "SUMMARY: The code change added error handling to the function, but also incorrectly removed the original return statement, and it now only returns when an exception occurs.\n\nISSUES: \n* The original return statement is removed, which will cause a syntax error if no exception is thrown.\n* The error handling only prints the error message and returns an empty list, but does not log or re-raise the exception for further handling.\n\nIMPROVEMENTS: \n* Re-add the original return statement to ensure the function returns the result list even when no exception occurs.\n* Consider logging the error message instead of just printing it, and re-raise the exception if necessary.\n\nDECISION: No - The code change introduces a syntax error by removing the original return statement."
+    },
+    {
+        "function_name": "handle_network_request",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 7,
+                "code": "try:\\n    # Send the request\\n    response = requests.get(url, params=params, timeout=timeout)",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 3,
+                "end_line": 4,
+                "code": "    # This is a dead code block\\n    pass",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def handle_network_request(url, params, timeout=10):\n    if not isinstance(url, str) or not isinstance(params, dict):\n        raise ValueError(\"Invalid input type\")\n    try:\n        # Send the request\n        response = requests.get(url, params=params, timeout=timeout)\n        # Check if the request was successful\n        response.raise_for_status()\n        return response.json()\n    except requests.exceptions.RequestException as e:\n        # Log the error and return None\n        print(f\"Request failed: {e}\")\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change removed a dead code block and added a try-except block around the requests.get call to handle potential exceptions.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider using a logging library instead of print for error logging, and add more specific error handling for different types of RequestExceptions.\n\nDECISION: Yes - The change improves the code by removing unnecessary code and adding exception handling."
+    },
+    {
+        "function_name": "get_time_interval_stats",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 5,
+                "code": "if (year, month) in interval_cache:\\n            return interval_cache[(year, month)]",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 7,
+                "end_line": 9,
+                "code": "days_in_month = 30\\n        if month in [1, 3, 5, 7, 8, 10, 12]:\\n            days_in_month = 31",
+                "line_count": 3
+            }
+        ],
+        "full_function_code": "def get_time_interval_stats(start_date, end_date):\n    interval_cache = {}\n    def get_days_in_month(year, month):\n        if (year, month) in interval_cache:\n            return interval_cache[(year, month)]\n        days_in_month = 30\n        if month in [1, 3, 5, 7, 8, 10, 12]:\n            days_in_month = 31\n        elif month == 2:\n            if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:\n                days_in_month = 29\n            else:\n                days_in_month = 28\n        interval_cache[(year, month)] = days_in_month\n        return days_in_month\n    total_days = 0\n    current_date = start_date\n    while current_date <= end_date:\n        year, month, _ = current_date\n        total_days += get_days_in_month(year, month)\n        if month < 12:\n            current_date = (year, month + 1, 1)\n        else:\n            current_date = (year + 1, 1, 1)\n    return total_days",
+        "code_review_suggestion": "SUMMARY: The code change adds caching to the `get_days_in_month` function to store and reuse previously calculated days in a month, while removing the initial incorrect assumption that all months have 30 days.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider using the `calendar` module to calculate days in a month for more accuracy and simplicity.\n\nDECISION: Yes - The change improves performance by reducing redundant calculations."
+    },
+    {
+        "function_name": "convert_length_units",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 9,
+                "code": "    # Cache intermediate results",
+                "line_count": 1
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 12,
+                "code": "    # Check if length_in_meters is a number\n    # if not isinstance(length_in_meters, (int, float)):\n    #     raise TypeError(\"length_in_meters must be a number\")",
+                "line_count": 3
+            }
+        ],
+        "full_function_code": "def convert_length_units(length_in_meters, target_unit):\n    # Define conversion factors\n    conversion_factors = {\n        \"kilometers\": 0.001,\n        \"miles\": 0.000621371,\n        \"yards\": 1.09361,\n        \"feet\": 3.28084\n    }\n    \n    # Check if target unit is valid\n    if target_unit not in conversion_factors:\n        raise ValueError(\"Invalid target unit\")\n    \n    # Cache intermediate results\n    length_in_target_unit = length_in_meters * conversion_factors[target_unit]\n    \n    # Removed dead code: unnecessary type checking\n    \n    return length_in_target_unit",
+        "code_review_suggestion": "SUMMARY: The code change removed type checking for the input length and added a comment for caching intermediate results, but the caching comment is misleading as it doesn't actually cache results.\n\nISSUES: \n1. The function no longer checks if the input length is a number, which could lead to errors.\n2. The comment about caching intermediate results is incorrect, as the result is not actually cached.\n\nIMPROVEMENTS: \n1. Re-add type checking for the input length to prevent potential errors.\n2. Remove or correct the misleading comment about caching intermediate results.\n\nDECISION: No - The code change introduces a potential bug by removing input type checking."
+    },
+    {
+        "function_name": "format_string",
+        "added_code": [
+            {
+                "start_line": 5,
+                "end_line": 6,
+                "code": "        # Check for empty strings to avoid concatenation issues\n        if input_str:",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 2,
+                "end_line": 3,
+                "code": "    if prefix and suffix:\n        return \\\"\\\".join([prefix, input_str, suffix])",
+                "line_count": 2
+            }
+        ],
+        "full_function_code": "def format_string(input_str, prefix, suffix):\n    if prefix is not None and suffix is not None:\n        return prefix + input_str + suffix\n    elif prefix is not None:\n        return prefix + input_str\n    elif suffix is not None:\n        return input_str + suffix\n    else:\n        return input_str\n",
+        "code_review_suggestion": "SUMMARY: The code change adds a check for empty strings and removes an unnecessary conditional statement for concatenating prefix, input string, and suffix.\n\nISSUES: None found\n\nIMPROVEMENTS: Consider adding input validation to check the type of input_str, prefix, and suffix to ensure they are all strings.\n\nDECISION: Yes - The changes simplify the code and avoid potential concatenation issues with empty strings."
+    },
+    {
+        "function_name": "parse_text_document",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 11,
+                "code": "            # Filter out special characters\n            words = [word for word in words if word.isalpha()]\n            # Convert words to lowercase",
+                "line_count": 3
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 10,
+                "end_line": 10,
+                "code": "            words = [word for word in words if word.isalnum()]",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def parse_text_document(document: str) -> list:\n    lines = document.split(\"\\n\")\n    parsed_lines = []\n    for line in lines:\n        # Remove leading/trailing whitespace\n        line = line.strip()\n        # Check if line is not empty\n        if line:\n            # Split line into words\n            words = line.split(\" \")\n            # Filter out stop words\n            stop_words = [\"the\", \"and\", \"a\", \"an\", \"in\", \"on\", \"at\", \"by\", \"with\"]\n            words = [word for word in words if word.lower() not in stop_words]\n            # Add parsed line to result\n            parsed_lines.append(words)\n    return parsed_lines",
+        "code_review_suggestion": "SUMMARY: The code change adds filtering of special characters and conversion to lowercase, while removing the filtering of alphanumeric words.\n\nISSUES: The removed line `words = [word for word in words if word.isalnum()]` previously filtered out words containing non-alphanumeric characters, which is now partially replaced by `words = [word for word in words if word.isalpha()]`, but this new line will also filter out numbers, potentially changing the expected behavior.\n\nIMPROVEMENTS: Consider adding a comment to explain the reasoning behind the change and the potential impact on the expected output, also consider adding a check to handle punctuation next to words.\n\nDECISION: No - The change may alter the expected output by filtering out numbers and not handling punctuation properly."
+    },
+    {
+        "function_name": "calculate_eigenvalues",
+        "added_code": [
+            {
+                "start_line": 9,
+                "end_line": 10,
+                "code": "except Exception as e:\n        print(f\\\"An error occurred: {e}\\\")",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 6,
+                "end_line": 7,
+                "code": "# Calculate eigenvalues using a loop\n        eigenvalues = []\n        for row in matrix:\n            for i in range(len(row)):\n                if row[i] != 0:\n                    eigenvalues.append(row[i])",
+                "line_count": 5
+            }
+        ],
+        "full_function_code": "def calculate_eigenvalues(matrix):\n    try:\n        # Check if matrix is square\n        if len(matrix) != len(matrix[0]):\n            raise ValueError(\"Matrix is not square\")\n        # Calculate eigenvalues using list comprehension\n        eigenvalues = [row[i] for row in matrix for i in range(len(row)) if row[i] != 0]\n        return eigenvalues\n    except ValueError as e:\n        print(f\"Error: {e}\")\n        return None\n    except Exception as e:\n        print(f\"An error occurred: {e}\")\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change replaced a loop-based approach to calculate eigenvalues with a list comprehension and added a generic exception handler.\n\nISSUES: The list comprehension does not correctly calculate eigenvalues, it only returns non-zero elements of the matrix, and the generic exception handler may mask specific exceptions that should be handled differently.\n\nIMPROVEMENTS: The function should use a library like NumPy to correctly calculate eigenvalues, and specific exceptions should be handled instead of the generic Exception class.\n\nDECISION: No - The code change does not correctly calculate eigenvalues and may mask important exceptions."
+    },
+    {
+        "function_name": "calculate_mortgage_payment",
+        "added_code": [
+            {
+                "start_line": 3,
+                "end_line": 6,
+                "code": "if principal < 0 or annual_interest_rate < 0 or years < 0:\\n            raise ValueError(\"Input values cannot be negative\")",
+                "line_count": 2
+            }
+        ],
+        "deleted_code": [
+            {
+                "start_line": 2,
+                "end_line": 2,
+                "code": "if principal < 0:\n            raise ValueError(\"Principal cannot be negative\")",
+                "line_count": 1
+            }
+        ],
+        "full_function_code": "def calculate_mortgage_payment(principal, annual_interest_rate, years)\n    try:\n        if principal < 0 or annual_interest_rate < 0 or years < 0:\n            raise ValueError(\"Input values cannot be negative\")\n        monthly_interest_rate = annual_interest_rate / 1200\n        number_of_months = years * 12\n        monthly_payment = round(principal * monthly_interest_rate * (1 + monthly_interest_rate) ** number_of_months / ((1 + monthly_interest_rate) ** number_of_months - 1), 2)\n        return monthly_payment\n    except ValueError as e:\n        print(f\"Error: {e}\")\n        return None",
+        "code_review_suggestion": "SUMMARY: The code change added a check to ensure that all input values (principal, annual_interest_rate, years) are non-negative and removed a specific check for a negative principal.\n\nISSUES: None found\n\nIMPROVEMENTS: None needed\n\nDECISION: Yes - The change improves the function's input validation by checking all parameters for negativity in a single line of code."
+    }
+]
